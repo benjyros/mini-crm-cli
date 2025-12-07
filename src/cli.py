@@ -286,7 +286,7 @@ def edit_contact_flow(contact_id):
 def delete_contact_flow(contact_id):
     all_contacts = storage.load_contacts()
     all_interactions = storage.load_interactions()
-    uses = [interaction for interaction in all_interactions if interaction.get("contact_id") == contact_id]
+    contact_interactions = [interaction for interaction in all_interactions if interaction.get("contact_id") == contact_id]
 
     contact = contacts.find_contact_by_id(all_contacts, contact_id)
     if contact is None:
@@ -295,10 +295,10 @@ def delete_contact_flow(contact_id):
 
     print("Kontakt:")
     print(contacts.format_contact_short(contact))
-    if uses:
-        print(f"Achtung: Es existieren {len(uses)} Interaktionen für diesen Kontakt.")
+    if contact_interactions:
+        print(f"Achtung: Es existieren {len(contact_interactions)} Interaktionen für diesen Kontakt.")
         print("Die Interaktionen werden auch gelöscht.")
-    confirm = input(f"Diesen Kontakt {'und deren Interaktionen ' if uses else ''}wirklich löschen? (y/n): ").strip().lower()
+    confirm = input(f"Diesen Kontakt {'und deren Interaktionen ' if contact_interactions else ''}wirklich löschen? (y/n): ").strip().lower()
     if confirm not in ("y", "j"):
         print("Löschen abgebrochen.")
         return
@@ -306,8 +306,8 @@ def delete_contact_flow(contact_id):
     contact_deleted = contacts.delete_contact(all_contacts, contact_id)
     interactions_deleted = True
 
-    if contact_deleted and uses:
-        for interaction in uses:
+    if contact_deleted and contact_interactions:
+        for interaction in contact_interactions:
             if not interactions.delete_interaction(all_interactions, interaction.get("id")):
                 interactions_deleted = False
                 break
@@ -316,9 +316,9 @@ def delete_contact_flow(contact_id):
     if success:
         storage.save_contacts(all_contacts)
         storage.save_interactions(all_interactions)
-        print(f"Kontakt {'und deren Interaktionen wurden' if uses else 'wurde'} gelöscht.")
+        print(f"Kontakt {'und deren Interaktionen wurden' if contact_interactions else 'wurde'} gelöscht.")
     else:
-        print(f"Kontakt {'und deren Interaktionen konnten' if uses else 'konnte'} nicht gelöscht werden.")
+        print(f"Kontakt {'und deren Interaktionen konnten' if contact_interactions else 'konnte'} nicht gelöscht werden.")
 
 
 def create_interaction_flow():
