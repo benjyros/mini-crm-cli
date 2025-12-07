@@ -303,7 +303,16 @@ def delete_contact_flow(contact_id):
         print("Löschen abgebrochen.")
         return
 
-    success = contacts.delete_contact(all_contacts, contact_id) and [interactions.delete_interaction(all_interactions, interaction.get("id")) for interaction in all_interactions]
+    contact_deleted = contacts.delete_contact(all_contacts, contact_id)
+    interactions_deleted = True
+
+    if contact_deleted and uses:
+        for interaction in uses:
+            if not interactions.delete_interaction(all_interactions, interaction.get("id")):
+                interactions_deleted = False
+                break
+
+    success = contact_deleted and interactions_deleted
     if success:
         storage.save_contacts(all_contacts)
         storage.save_interactions(all_interactions)
