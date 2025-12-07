@@ -254,12 +254,11 @@ def edit_contact_flow(contact_id):
 
     company = contact.get("company")
     print(f"Aktueller Firma: {company or '-'}")
-    new_company = input("Neue Firma (leer = keine): ").strip()
-    if new_company:
-        company = new_company
-    else:
+    new_company = input("Neue Firma (Enter = beibehalten, '-' = keine Firma): ").strip()
+    if new_company == "-":
         company = ""
-
+    elif new_company:
+        company = new_company
     phone = contact.get("phone")
     print(f"Aktuelle Telefonnummer: {phone}")
     new_phone = input("Neue Telefonnummer: ").strip()
