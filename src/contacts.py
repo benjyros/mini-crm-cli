@@ -74,7 +74,7 @@ def print_contacts(contacts_list):
         return
 
     headers = ["ID", "Vorname", "Nachname", "E-Mail", "Firma", "Telefon"]
-    widhts = [len(header) + 2 for header in headers]
+    widths = [len(header) + 2 for header in headers]
 
     rows = []
     for contact in contacts_list:
@@ -88,13 +88,11 @@ def print_contacts(contacts_list):
         ]
         rows.append(row)
         for index, value in enumerate(row):
-            widhts[index] = max(widhts[index], len(value) + 2)
-
+            widths[index] = max(widths[index], len(value) + 2)
     def format_row(row):
-        return " ".join(f"{item:<{widhts[i]}}" for i, item in enumerate(row))
+        return " ".join(f"{item:<{widths[i]}}" for i, item in enumerate(row))
     
-    separator = "-".join("-" * widht for widht in widhts)
-
+    separator = "-".join("-" * width for width in widths)
     print(separator)
     print(format_row(headers))
     print(separator)
